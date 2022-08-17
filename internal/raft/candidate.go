@@ -13,8 +13,8 @@ type Candidate struct {
 
 func (c *Candidate) Wait() {
 	for range c.Raft.Timer.Bridge {
-		if c.Raft.Timer.Done && !c.isLeader {
-			log.Println("[INFO] timer expired!")
+		if c.Raft.Timer.IsDone() && !c.isLeader {
+			log.Println("[INFO] timer expired!", c.Raft.Label)
 			c.vote()
 		}
 
@@ -26,7 +26,7 @@ func (c *Candidate) Wait() {
 }
 
 func (c *Candidate) vote() {
-	log.Println(" [INFO] voting ")
+	log.Println(" [INFO] voting ", c.Raft.Label)
 	c.isLeader = true
 	c.Raft.Timer.Reset()
 }

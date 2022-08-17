@@ -17,7 +17,7 @@ type Raft struct {
 func (r *Raft) Config() {
 	log.Println("[INFO] Raft Config ", r)
 	b := make(chan time.Time)
-	vt := &VTimer{Bridge: b, Timeout: r.Timeout}
+	vt := &VTimer{Bridge: b, Timeout: r.Timeout, RaftLabel: r.Label}
 	r.Timer = vt
 	bytec := make(chan []byte)
 	n := &Network{Port: r.Port, Peers: r.Peers}
@@ -25,7 +25,7 @@ func (r *Raft) Config() {
 	r.Net = n
 	go Begin(r)
 	for bc := range bytec {
-		log.Println(" [VERBOSE] raft accepted bytes ", string(bc))
+		log.Println(" [VERBOSE] raft accepted bytes ", r.Label, " ", string(bc))
 		r.Timer.Reset()
 	}
 }
